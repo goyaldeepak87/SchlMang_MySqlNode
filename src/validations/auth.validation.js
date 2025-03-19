@@ -68,6 +68,7 @@ const registerSuperAdimn = {
     name: Joi.string().required(),
     email: Joi.string().required().email(),
     password: Joi.string().required().custom(password),
+    role: Joi.string().required(),
   }).unknown(true),
 };
 

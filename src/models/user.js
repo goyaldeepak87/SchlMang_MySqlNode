@@ -26,9 +26,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         role: {
             type: DataTypes.STRING,
-            enum: ['superadmin', 'admin', 'teacher', 'student'],
-            // defaultValue: 'user', // 'user' is default role
-            required: true,
+            validate: {
+                isIn: [['superadmin', 'admin', 'teacher', 'student']]
+            },
+            allowNull: false,
         },
         status: {
             type: DataTypes.BOOLEAN,

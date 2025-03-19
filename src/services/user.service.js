@@ -6,10 +6,10 @@ const { hashPassword } = require('../utils/bcryptUtils');
 
 
 const createUser = async (userBody) => {
-    const emailTaken = await User.findOne({ where: { email: userBody.email } });
-    if (emailTaken) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-    }
+    // const emailTaken = await User.findOne({ where: { email: userBody.email } });
+    // if (emailTaken) {
+    //     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+    // }
     const password = await hashPassword(userBody?.password)
 
     const user = await User.create({ ...userBody, password });
