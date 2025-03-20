@@ -8,3 +8,6 @@ git push -u origin main
 
 // git clone
 git@github.com:goyaldeepak87/SchlMang_MySqlNode.git
+
+//migrate create command 
+npx sequelize-cli migration:generate --name create-users --migrations-path src/db/migrations

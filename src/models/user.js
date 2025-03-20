@@ -18,11 +18,21 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 isEmail: true,
             },
-        }, 
+        },
         password: {
             type: DataTypes.STRING,
             allowNull: false,
             required: true,
+        },
+        contactNumber: {
+            type: DataTypes.STRING,
+            required: true,
+            validate: {
+                validator: function (v) {
+                    return /^[0-9]{10}$/.test(v);
+                },
+                message: 'Contact number must be 10 digits'
+            }
         },
         role: {
             type: DataTypes.STRING,
