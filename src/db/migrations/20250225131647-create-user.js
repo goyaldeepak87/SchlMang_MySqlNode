@@ -1,6 +1,5 @@
-// 'use strict';
+'use strict';
 
-// /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Users', {
@@ -11,61 +10,78 @@ module.exports = {
         primaryKey: true,
       },
       uuid: {
-        allowNull: false,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV1,
-        // primaryKey: true,
+        defaultValue: Sequelize.UUIDV4,
+        primaryKey: true,
+        unique: true,
       },
       name: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       email: {
         type: Sequelize.STRING,
-      },
-      dob: {
-        type: DataTypes.DATE,
+        allowNull: false,
+        unique: true,
       },
       password: {
         type: Sequelize.STRING,
-        allowNull: true,
-        required: true,
+        allowNull: false,
       },
-      phone_number: {
-        type: DataTypes.STRING,
+      contactNumber: {
+        type: Sequelize.STRING,
+        allowNull: true, // It's optional by default
+      },
+      img: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      subject: {
+        type: Sequelize.STRING,
+        allowNull: true, // It's optional by default
+      },
+      role: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          isIn: [['superadmin', 'admin', 'teacher', 'student']],
+        },
+      },
+      creatorRole: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        validate: {
+          isIn: [['SuperAdmin', 'Admin', 'Teacher']],
+        },
       },
       status: {
         type: Sequelize.BOOLEAN,
-      },
-      is_blocked: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false, // not verified by default
-      },
-      role: {
-        type: DataTypes.STRING,
-        defaultValue: 'user', // 'user' is default role
+        defaultValue: true,
       },
       is_verified: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false, // not verified by default
+        defaultValue: false,
       },
-      gender: {
-        type: Sequelize.STRING,
+      is_blocked: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
-      profile_picture: {
-        type: DataTypes.STRING,
-      },
-      created_at: {
-        allowNull: false,
+      createdAt: {
         type: Sequelize.DATE,
-      },
-      updated_at: {
         allowNull: false,
+      },
+      updatedAt: {
         type: Sequelize.DATE,
+        allowNull: false,
+      },
+      deletedAt: {
+        type: Sequelize.DATE,
+        allowNull: true, // Allows soft deletion
       },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Users');
-  },
+  }
 };

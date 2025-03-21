@@ -7,7 +7,7 @@ const auth = require('../../middlewares/auth');
 const router = express.Router();
 
 
-router.post('/register', validate(authValidation.registerSuperAdimn), authController.register);
+router.post('/superadmin/register', validate(authValidation.registerSuperAdimn), authController.register);
 
 router.post('/login', validate(authValidation.loginSuperAdiman), authController.login);
 

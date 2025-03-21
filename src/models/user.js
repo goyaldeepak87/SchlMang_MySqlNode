@@ -22,24 +22,57 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             type: DataTypes.STRING,
             allowNull: false,
-            required: true,
         },
         contactNumber: {
             type: DataTypes.STRING,
-            required: true,
+            allowNull: true,  // Set to true by default for other roles
             validate: {
                 validator: function (v) {
                     return /^[0-9]{10}$/.test(v);
                 },
-                message: 'Contact number must be 10 digits'
-            }
+                message: 'Contact number must be 10 digits',
+            },
+            // Custom validation based on role
+            set(value) {
+                if (this.role !== 'superadmin' && !value) {
+                    throw new Error('Contact number is required for admin role');
+                }
+                this.setDataValue('contactNumber', value);
+            },
+        },
+        img: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            get() {
+                const profilePicture = this.getDataValue('profile_picture');
+                if (profilePicture) {
+                    return `${process.env.BACKEND_URL}/profile/${profilePicture}`;
+                } else {
+                    return null;
+                }
+            },
+        },
+        subject: {
+            type: DataTypes.STRING,
+            allowNull: true, // Set to true by default for other roles
+            validate: {
+                isSubjectRequired(value) {
+                    if (this.role === 'teacher' && !value) {
+                        throw new Error('Subject is required for teacher role');
+                    }
+                },
+            },
         },
         role: {
             type: DataTypes.STRING,
             validate: {
-                isIn: [['superadmin', 'admin', 'teacher', 'student']]
+                isIn: [['superadmin', 'admin', 'teacher', 'student']],
             },
             allowNull: false,
+        },
+        creatorRole: {
+            type: DataTypes.STRING,
+            enum: ['SuperAdmin', 'Admin', 'Teacher'],
         },
         status: {
             type: DataTypes.BOOLEAN,
@@ -54,18 +87,18 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false,
         },
     },
-        {
-            paranoid: true,
-            timestamps: true,
-            defaultScope: {
-                attributes: { exclude: ['password'] },  // Password is excluded here by default
+    {
+        paranoid: true,
+        timestamps: true,
+        defaultScope: {
+            attributes: { exclude: ['password'] },  // Password is excluded here by default
+        },
+        scopes: {
+            withPassword: {
+                attributes: { include: ['password'] }, // Include the password for authentication
             },
-            scopes: {
-                withPassword: {
-                    attributes: { include: ['password'] }, // Include the password for authentication
-                },
-            },
-        });
+        },
+    });
 
     // Method to compare passwords
     User.prototype.isPasswordMatch = async function (password) {
