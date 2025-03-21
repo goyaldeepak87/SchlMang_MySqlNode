@@ -1,5 +1,5 @@
 const express = require('express');
-const authSchlEmployRoute = require('./authSchlEmploy.route');
+const authSchEmpRoute = require('./authSchEmp.route');
 const userRoute = require('./user.route');
 // const docsRoute = require('./docs.route');
 const config = require('../../config/config');
@@ -9,7 +9,7 @@ const router = express.Router();
 const defaultRoutes = [
   {
     path: '/auth',
-    route: authSchlEmployRoute,
+    route: authSchEmpRoute,
   },
   {
     path: '/superadmin/user',

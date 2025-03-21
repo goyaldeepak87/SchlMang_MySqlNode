@@ -5,14 +5,25 @@ const { generateAuthTokens } = require('../services/token.service');
 const userMessages = require('../messages/userMessages');
 
 const register = catchAsync(async (req, res) => {
-    const user = await userService.createUser(req.body);
+    console.log("sdasdads", )
+    const user = await userService.createUser(req.body, req.headers.role);
     res.sendJSONResponse({
         statusCode: httpStatus.CREATED,
         status: true,
         message: userMessages.USER_REGISTER,
-        data: { result: user  },
+        data: { result: user }
     });
 });
+
+const empRegister = catchAsync(async (req, res) => {
+    const user = await userService.empcreateUser(req.body);
+    res.sendJSONResponse({
+        statusCode: httpStatus.CREATED,
+        status: true,
+        message: userMessages.USER_REGISTER,
+        data: { result: user }
+    });
+})
 
 
 const login = catchAsync(async (req, res) => {
@@ -55,6 +66,7 @@ const deleteProfile = async (req, res) => {
 
 module.exports = {
     register,
+    empRegister,
     login,
     resetPassword,
     deleteProfile

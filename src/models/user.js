@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const validator = require('validator');
 
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
@@ -22,17 +23,26 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             type: DataTypes.STRING,
             allowNull: false,
+            // Using a setter to hash the password before saving it
+            set(value) {
+                const salt = bcrypt.genSaltSync(10);  // Generates a salt with 10 rounds
+                const hashPassword = bcrypt.hashSync(value, salt);  // Hash the password synchronously
+                this.setDataValue('password', hashPassword);  // Set the hashed password value
+            },
         },
         contactNumber: {
             type: DataTypes.STRING,
-            allowNull: true,  // Set to true by default for other roles
+            allowNull: true, // Set to true by default for other roles
             validate: {
-                validator: function (v) {
-                    return /^[0-9]{10}$/.test(v);
+                isValidContact(value) {
+                    if (value && !validator.isNumeric(value)) {
+                        throw new Error('Contact number must be numeric');
+                    }
+                    if (value && !validator.isLength(value, { min: 10, max: 10 })) {
+                        throw new Error('Contact number must be 10 digits');
+                    }
                 },
-                message: 'Contact number must be 10 digits',
             },
-            // Custom validation based on role
             set(value) {
                 if (this.role !== 'superadmin' && !value) {
                     throw new Error('Contact number is required for admin role');
@@ -101,7 +111,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     // Method to compare passwords
-    User.prototype.isPasswordMatch = async function (password) {
+    User.prototype.isPasswordMatching = async function (password) {
         if (!this.password) {
             throw new Error('Password is not set');
         }

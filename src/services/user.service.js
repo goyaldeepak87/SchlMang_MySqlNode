@@ -3,27 +3,18 @@ const httpStatus = require('http-status');
 const ApiError = require('../utils/ApiError');
 const { hashPassword } = require('../utils/bcryptUtils');
 
-
-
-const createUser = async (userBody) => {
-    // const emailTaken = await User.findOne({ where: { email: userBody.email } });
-    // if (emailTaken) {
-    //     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-    // }
-    const password = await hashPassword(userBody?.password)
-
-    const user = await User.create({ ...userBody, password });
-
-    // Create a token for the user
-    // const token = await Token.create({
-    //     token: uuidv4(),
-    //     user_uuid: user.uuid, // Associate the token with the created user
-    //     type: 'auth', // You can adjust the type as needed
-    //     expires: new Date(new Date().getTime() + 3600000) // Set the expiry time (1 hour for example)
-    // });
-
+const createUser = async (userBody, role) => {
+    const emailTaken = await User.findOne({ where: { role: role } });
+    if (emailTaken) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User already taken');
+    }
+    const user = await User.create({...userBody, role});
     return { user };
 };
+
+const empcreateUser = async (userBody) => {
+    const emailTaken = await User.findOne({ where: { email: userBody.email } });      
+} 
 
 const getUserByEmail = async (email) => {
     return User.findOne({ email });
@@ -40,12 +31,6 @@ const updateUserByPassword = async (userId, new_password) => {
         { password: password }, // Set the new password (hashed)
         { where: { uuid: userId } } // Update user with the provided userId
     );
-    // if (!user) {
-    //     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-    // }
-    // if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
-    //     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-    // }
     return updatedUser;
 };
 
@@ -99,7 +84,5 @@ const userProfileUpdate = async (req, userID) => {
         throw new Error('An error occurred while updating the profile');
     }
 };
-
-
 
 module.exports = { createUser, getUserByEmail, getUserById, updateUserByPassword, userProfileUpdate };

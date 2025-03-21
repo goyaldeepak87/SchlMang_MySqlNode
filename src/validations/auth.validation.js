@@ -68,6 +68,29 @@ const registerSuperAdimn = {
     name: Joi.string().required(),
     email: Joi.string().required().email(),
     password: Joi.string().required().custom(password),
+  }),
+  headers: Joi.object().keys({
+    role: Joi.string().required(),
+    // 'content-type': Joi.string().required(),
+    // 'user-agent': Joi.string().required(),
+    // accept: Joi.string().required(),
+    // 'cache-control': Joi.string().required(),
+    // 'postman-token': Joi.string().required(),
+    // host: Joi.string().required(),
+    // 'accept-encoding': Joi.string().required(),
+    // connection: Joi.string().required(),
+    // 'content-length': Joi.string().required(),
+  }).unknown(true),
+};
+
+const registerAdimn = {
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().custom(password),
+    name: Joi.string().required(),
+    contactNumber: Joi.string().required(),
+  }),
+  headers: Joi.object().keys({
     role: Joi.string().required(),
   }).unknown(true),
 };
@@ -80,17 +103,6 @@ const loginSuperAdiman = {
   })
 };
 
-const registerAdimn = {
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().custom(password),
-    name: Joi.string().required(),
-    contactNumber: Joi.string().required(),
-  }),
-  // query: Joi.object().keys({
-  //   role: Joi.string().required(),
-  // }),
-};
 
 const headersRoleCheck = {
   headers: Joi.object().keys({
