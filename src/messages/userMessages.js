@@ -8,6 +8,7 @@ const userMessages = {
     TOKEN_INVALID: 'Invalid token.',
     USER_DATA_FEATCH:'User data featch successfully.',
     USER_PROFILE_UPDATAED:'User data featch successfully.',
+    USER_EMAIL_ADD:'User email add successfully.',
 };
 
 module.exports = userMessages;

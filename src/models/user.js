@@ -111,11 +111,13 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     // Method to compare passwords
-    User.prototype.isPasswordMatching = async function (password) {
+    User.prototype.isPasswordMatch = async function (password) {
+        console.log("password==>", password, this.password)
         if (!this.password) {
             throw new Error('Password is not set');
         }
         const isMatch = await bcrypt.compare(password, this.password);
+        console.log("isMatch==>", isMatch)
         return isMatch;
     };
 

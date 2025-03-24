@@ -10,12 +10,12 @@ const register = {
   }).unknown(true),
 };
 
-const login = {
-  body: Joi.object().keys({
-    email: Joi.string().required(),
-    password: Joi.string().required(),
-  }),
-};
+// const login = {
+//   body: Joi.object().keys({
+//     email: Joi.string().required(),
+//     password: Joi.string().required(),
+//   }),
+// };
 
 const logout = {
   body: Joi.object().keys({
@@ -95,12 +95,28 @@ const registerAdimn = {
   }).unknown(true),
 };
 
-const loginSuperAdiman = {
+const registerEmpTeacher = {
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().custom(password),
+    name: Joi.string().required(),
+    contactNumber: Joi.string().required(),
+    subject: Joi.string().required(),
+  }),
+  headers: Joi.object().keys({
+    role: Joi.string().required(),
+  }).unknown(true),
+};
+
+const login = {
   body: Joi.object().keys({
     email: Joi.string().required(),
     password: Joi.string().required(),
     // role: Joi.string().required(),
-  })
+  }),
+  // headers: Joi.object().keys({
+  //   role: Joi.string().required(),
+  // }).unknown(true),
 };
 
 
@@ -141,7 +157,28 @@ const logoutSchoolUser = {
   }).unknown(true),
 };
 
-
+const registerUserEmail = {
+  body: Joi.object().keys({
+    user_email: Joi.string().required(),
+    user_role: Joi.string().required(),
+    // role: Joi.string().required(),
+  }),
+  headers: Joi.object().keys({
+    role: Joi.string().required(),
+    authorization: Joi.string()
+      .required()
+      .custom((value, helpers) => {
+        if (value.split(" ")[0] !== "Bearer") {
+          return helpers.message('Bearer JWT Allow');
+        }
+        return value;
+      })
+      .messages({
+        'any.required': 'Bearer Token is required.',
+        'any.invalid': 'Invalid Bearer Token.',
+      }),
+  }).unknown(true),
+};
 
 module.exports = {
   register,
@@ -153,7 +190,8 @@ module.exports = {
   verifyEmail,
   registerSuperAdimn,
   registerAdimn,
-  loginSuperAdiman,
+  registerEmpTeacher,
   headersRoleCheck,
   logoutSchoolUser,
+  registerUserEmail
 };

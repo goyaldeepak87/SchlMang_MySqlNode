@@ -38,7 +38,39 @@ const userUpadteProfile = catchAsync(async (req, res) => {
     });
 })
 
+const createUserEmail = catchAsync(async (req, res) => {
+    const token = req.headers.authorization;
+    const userID = await tokenService.verifyTokenUserId(token);
+
+    const user = await Token.findOne({
+        where: { user_uuid: userID.sub }
+    });
+
+    // Role-based restrictions
+    const { user_role } = req.body;
+    if (user.role === 'superadmin' && !['admin', 'teacher', 'student'].includes(user_role)) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Super admin can only register admin, teacher, or student');
+    }
+    if (user.role === 'admin' && user_role !== 'teacher') {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Admin can only register teacher');
+    }
+    if (user.role === 'teacher') {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Teacher cannot register any user');
+    }
+
+    console.log("user++", user)
+    const userEmail = await userService.userEmailAdd(req.body, user.user_uuid);
+
+    res.sendJSONResponse({
+        statusCode: httpStatus.OK,
+        status: true,
+        message: userMessages.USER_EMAIL_ADD,
+        data: { result: { userEmail } },
+    });
+})
+
 module.exports = {
     userProfile,
-    userUpadteProfile
+    userUpadteProfile,
+    createUserEmail,
 }

@@ -7,7 +7,15 @@ const upload = require('../../config/uploadConfig');
 
 const router = express.Router();
 
-router.get("/profile", validate(authValidation.logoutSchoolUser), auth(), userController.userProfile)
-router.post("/update-profile", auth(), upload.single('profile_picture'), userController.userUpadteProfile)
+// superAdmin
+router.post("/superadmin/create-user-email", validate(authValidation.registerUserEmail), auth(), userController.createUserEmail)
+
+
+
+
+
+
+// router.get("/profile", validate(authValidation.logoutSchoolUser), auth(), userController.userProfile)
+// router.post("/update-profile", auth(), upload.single('profile_picture'), userController.userUpadteProfile)
 
 module.exports = router;

@@ -12,7 +12,7 @@ const defaultRoutes = [
     route: authSchEmpRoute,
   },
   {
-    path: '/superadmin/user',
+    path: '/user',
     route: userRoute,
   },
 ];

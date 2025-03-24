@@ -16,7 +16,7 @@ const register = catchAsync(async (req, res) => {
 });
 
 const empRegister = catchAsync(async (req, res) => {
-    const user = await userService.empcreateUser(req.body);
+    const user = await userService.empcreateUser(req.body, req.headers.role);
     res.sendJSONResponse({
         statusCode: httpStatus.CREATED,
         status: true,
@@ -27,6 +27,7 @@ const empRegister = catchAsync(async (req, res) => {
 
 
 const login = catchAsync(async (req, res) => {
+    console.log("login==>", req.body)
     const { email, password } = req.body
     const user = await authService.loginUserWithEmailAndPassword(email, password);
     const token = await generateAuthTokens(user)

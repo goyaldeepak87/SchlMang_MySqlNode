@@ -1,4 +1,4 @@
-const { User, Token } = require('../models');
+const { User, Token, UserEmail } = require('../models');
 const httpStatus = require('http-status');
 const ApiError = require('../utils/ApiError');
 const { hashPassword } = require('../utils/bcryptUtils');
@@ -8,13 +8,19 @@ const createUser = async (userBody, role) => {
     if (emailTaken) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'User already taken');
     }
-    const user = await User.create({...userBody, role});
+    const user = await User.create({ ...userBody, role });
     return { user };
 };
 
-const empcreateUser = async (userBody) => {
-    const emailTaken = await User.findOne({ where: { email: userBody.email } });      
-} 
+const empcreateUser = async (userBody, role) => {
+    console.log("userBody++", userBody)
+    const emailTaken = await User.findOne({ where: { email: userBody.email } });
+    if (emailTaken) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User already taken');
+    }
+    const user = await User.create({ ...userBody, role });
+    return { user };
+}
 
 const getUserByEmail = async (email) => {
     return User.findOne({ email });
@@ -25,10 +31,8 @@ const getUserById = async (id) => {
 };
 
 const updateUserByPassword = async (userId, new_password) => {
-    const password = await hashPassword(new_password)
-
     const updatedUser = await User.update(
-        { password: password }, // Set the new password (hashed)
+        { password: new_password }, // Set the new password (hashed)
         { where: { uuid: userId } } // Update user with the provided userId
     );
     return updatedUser;
@@ -85,4 +89,11 @@ const userProfileUpdate = async (req, userID) => {
     }
 };
 
-module.exports = { createUser, getUserByEmail, getUserById, updateUserByPassword, userProfileUpdate };
+const userEmailAdd = async (userBody, userID) => {
+    const { user_email, user_role } = userBody;
+    console.log("userID,", userID)
+    const user = await UserEmail.create({ email: user_email, role: user_role, createdBy: userID });
+    return { user };
+}
+
+module.exports = { createUser, userEmailAdd, empcreateUser, getUserByEmail, getUserById, updateUserByPassword, userProfileUpdate };

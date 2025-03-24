@@ -11,9 +11,9 @@ const router = express.Router();
 
 router.post('/superadmin/register', validate(authValidation.registerSuperAdimn), authController.register);
 
-router.post('/login', validate(authValidation.loginSuperAdiman), authController.login);
+router.post('/superadmin/login', validate(authValidation.login), authController.login);
 
-router.post('/change-password', validate(authValidation.resetPassword), auth(), authController.resetPassword)
+router.post('/superadmin/change-password', validate(authValidation.resetPassword), auth(), authController.resetPassword)
 
 router.post('/user-delete', auth(), authController.deleteProfile)
 
@@ -23,20 +23,20 @@ router.post('/user-delete', auth(), authController.deleteProfile)
 
 router.post('/admin/register', validate(authValidation.registerAdimn), authController.register);
 
-router.post('/login', validate(authValidation.loginSuperAdiman), authController.login);
+router.post('/admin/login', validate(authValidation.login), authController.login);
 
-router.post('/change-password', validate(authValidation.resetPassword), auth(), authController.resetPassword)
+router.post('/admin/change-password', validate(authValidation.resetPassword), auth(), authController.resetPassword)
 
 router.post('/user-delete', auth(), authController.deleteProfile)
 
 
 //  teacherEmployee
 
-router.post('/employee/register', validate(authValidation.registerSuperAdimn), authController.empRegister);
+router.post('/employee/register', validate(authValidation.registerEmpTeacher), authController.empRegister);
 
-router.post('/login', validate(authValidation.loginSuperAdiman), authController.login);
+router.post('/employee/login', validate(authValidation.login), authController.login);
 
-router.post('/change-password', validate(authValidation.resetPassword), auth(), authController.resetPassword)
+router.post('/employee/change-password', validate(authValidation.resetPassword), auth(), authController.resetPassword)
 
 router.post('/user-delete', auth(), authController.deleteProfile)
 

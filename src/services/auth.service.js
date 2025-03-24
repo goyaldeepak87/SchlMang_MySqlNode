@@ -45,11 +45,12 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 
 const resetPassword = async (resetPasswordToken, password) => {
   const { old_password, new_password } = password
+  console.log("password==>", password)
   // try {
   const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
   // const user = await userService.getUserById(resetPasswordTokenDoc.user_uuid);
   const user = await User.scope('withPassword').findOne({ where: { uuid: resetPasswordTokenDoc.user_uuid } });
-
+  console.log("user==>", user)
   if (!user || !(await user.isPasswordMatch(old_password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect password');
   }
