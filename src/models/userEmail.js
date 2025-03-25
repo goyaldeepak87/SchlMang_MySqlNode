@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         createdBy: {
             type: DataTypes.UUID,
             allowNull: false,
+            references: {
+                model: 'Users', // This should match the name of the user model (case-sensitive)
+                key: 'uuid',
+            },
         },
         // creatorRole: {
         //     type: DataTypes.STRING,
@@ -50,6 +54,14 @@ module.exports = (sequelize, DataTypes) => {
             },
         },
     });
+
+    UserEmail.associate = (models) => {
+        // Token belongs to User
+        UserEmail.belongsTo(models.User, {
+            foreignKey: 'createdBy',
+            targetKey: 'uuid', // Make sure this matches the `User` table's `uuid` field
+        });
+    };
 
     return UserEmail;
 };

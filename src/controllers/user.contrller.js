@@ -5,6 +5,7 @@ const { tokenService, fileService } = require('../services');
 const { Token, User } = require('../models');
 const { userService } = require('../services');
 const userMessages = require('../messages/userMessages');
+const ApiError = require('../utils/ApiError');
 
 const userProfile = catchAsync(async (req, res) => {
     const token = req.headers.authorization;
@@ -40,13 +41,25 @@ const userUpadteProfile = catchAsync(async (req, res) => {
 
 const createUserEmail = catchAsync(async (req, res) => {
     const token = req.headers.authorization;
+    const userrole = req.headers.role;
+    console.log("role++==>", role)
     const userID = await tokenService.verifyTokenUserId(token);
-
-    const user = await Token.findOne({
-        where: { user_uuid: userID.sub }
+    console.log("userID++", userID)
+    const tokenData = await Token.findOne({
+        where: { user_uuid: userID.sub },
+        include: {
+            model: User,
+            where: { role: userrole },
+        }
     });
 
+    if (!tokenData) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'User not found or role mismatch');
+    }
+
+    const user = tokenData.User;
     // Role-based restrictions
+    console.log("userID++", user)
     const { user_role } = req.body;
     if (user.role === 'superadmin' && !['admin', 'teacher', 'student'].includes(user_role)) {
         throw new ApiError(httpStatus.FORBIDDEN, 'Super admin can only register admin, teacher, or student');
