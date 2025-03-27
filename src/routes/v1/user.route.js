@@ -11,9 +11,12 @@ const router = express.Router();
 router.post("/superadmin/create-user-email", validate(authValidation.registerUserEmail), auth(), userController.createUserEmail)
 
 
+// Admin
+router.post("/admin/create-user-email", validate(authValidation.registerUserEmail), auth(), userController.createUserEmail)
 
 
-
+// teacherEmployee
+router.post("/employee/create-user-email", validate(authValidation.registerUserEmail), auth(), userController.createUserEmail)
 
 // router.get("/profile", validate(authValidation.logoutSchoolUser), auth(), userController.userProfile)
 // router.post("/update-profile", auth(), upload.single('profile_picture'), userController.userUpadteProfile)

@@ -42,9 +42,7 @@ const userUpadteProfile = catchAsync(async (req, res) => {
 const createUserEmail = catchAsync(async (req, res) => {
     const token = req.headers.authorization;
     const userrole = req.headers.role;
-    console.log("role++==>", role)
     const userID = await tokenService.verifyTokenUserId(token);
-    console.log("userID++", userID)
     const tokenData = await Token.findOne({
         where: { user_uuid: userID.sub },
         include: {
@@ -58,8 +56,8 @@ const createUserEmail = catchAsync(async (req, res) => {
     }
 
     const user = tokenData.User;
+    
     // Role-based restrictions
-    console.log("userID++", user)
     const { user_role } = req.body;
     if (user.role === 'superadmin' && !['admin', 'teacher', 'student'].includes(user_role)) {
         throw new ApiError(httpStatus.FORBIDDEN, 'Super admin can only register admin, teacher, or student');
@@ -72,7 +70,7 @@ const createUserEmail = catchAsync(async (req, res) => {
     }
 
     console.log("user++", user)
-    const userEmail = await userService.userEmailAdd(req.body, user.user_uuid);
+    const userEmail = await userService.userEmailAdd(req.body, user.uuid);
 
     res.sendJSONResponse({
         statusCode: httpStatus.OK,
