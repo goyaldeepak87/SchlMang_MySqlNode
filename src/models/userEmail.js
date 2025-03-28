@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         paranoid: true, // Enable soft deletes
         timestamps: true, // Add createdAt and updatedAt timestamps
-        defaultScope: {
+        defaultScope: { 
             attributes: { exclude: ['createdBy'] }, // Exclude createdBy by default
         },
         scopes: {
@@ -55,13 +55,13 @@ module.exports = (sequelize, DataTypes) => {
         },
     });
 
-    UserEmail.associate = (models) => {
-        // Token belongs to User
-        UserEmail.belongsTo(models.User, {
-            foreignKey: 'createdBy',
-            targetKey: 'uuid', // Make sure this matches the `User` table's `uuid` field
-        });
-    };
+    // UserEmail.associate = (models) => {
+    //     // Token belongs to User
+    //     UserEmail.belongsTo(models.User, {
+    //         foreignKey: 'createdBy',
+    //         targetKey: 'uuid', // Make sure this matches the `User` table's `uuid` field
+    //     });
+    // };
 
     return UserEmail;
 };

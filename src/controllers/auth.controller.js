@@ -3,9 +3,26 @@ const catchAsync = require('../utils/catchAsync');
 const { userService, authService, tokenService } = require('../services');
 const { generateAuthTokens } = require('../services/token.service');
 const userMessages = require('../messages/userMessages');
+const { UserEmail } = require('../models');
+const ApiError = require('../utils/ApiError');
 
 const register = catchAsync(async (req, res) => {
-    console.log("sdasdads", )
+    console.log("sdasdads",)
+    const user = await userService.createUser(req.body, req.headers.role);
+    res.sendJSONResponse({
+        statusCode: httpStatus.CREATED,
+        status: true,
+        message: userMessages.USER_REGISTER,
+        data: { result: user }
+    });
+});
+
+const EmailAndRegister = catchAsync(async (req, res) => {
+    const { email } = req.body;
+
+    const userEmail = await userService.checkEmailAndRegister(email);
+
+    console.log("userEmail", userEmail)
     const user = await userService.createUser(req.body, req.headers.role);
     res.sendJSONResponse({
         statusCode: httpStatus.CREATED,
@@ -16,6 +33,11 @@ const register = catchAsync(async (req, res) => {
 });
 
 const empRegister = catchAsync(async (req, res) => {
+    const { email } = req.body;
+    const role  = req.headers.role;
+console.log("role==>9999", role)
+    const userEmail = await userService.checkEmailAndRegister(email, role);
+
     const user = await userService.empcreateUser(req.body, req.headers.role);
     res.sendJSONResponse({
         statusCode: httpStatus.CREATED,
@@ -67,6 +89,7 @@ const deleteProfile = async (req, res) => {
 
 module.exports = {
     register,
+    EmailAndRegister,
     empRegister,
     login,
     resetPassword,

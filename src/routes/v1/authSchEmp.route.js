@@ -21,7 +21,7 @@ router.post('/user-delete', auth(), authController.deleteProfile)
 
 // admin
 
-router.post('/admin/register', validate(authValidation.registerAdimn), authController.register);
+router.post('/admin/register', validate(authValidation.registerAdimn), authController.EmailAndRegister);
 
 router.post('/admin/login', validate(authValidation.login), authController.login);
 
@@ -37,6 +37,17 @@ router.post('/employee/register', validate(authValidation.registerEmpTeacher), a
 router.post('/employee/login', validate(authValidation.login), authController.login);
 
 router.post('/employee/change-password', validate(authValidation.resetPassword), auth(), authController.resetPassword)
+
+router.post('/user-delete', auth(), authController.deleteProfile)
+
+
+//  student
+
+router.post('/student/register', validate(authValidation.registerStudent), authController.empRegister);
+
+router.post('/student/login', validate(authValidation.login), authController.login);
+
+router.post('/student/change-password', validate(authValidation.resetPassword), auth(), authController.resetPassword)
 
 router.post('/user-delete', auth(), authController.deleteProfile)
 

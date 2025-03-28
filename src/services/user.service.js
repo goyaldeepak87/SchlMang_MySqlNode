@@ -6,7 +6,7 @@ const { hashPassword } = require('../utils/bcryptUtils');
 const createUser = async (userBody, role) => {
     const emailTaken = await User.findOne({ where: { role: role } });
     if (emailTaken) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'User already taken');
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not Autherise this role');
     }
     const user = await User.create({ ...userBody, role });
     return { user };
@@ -20,6 +20,18 @@ const empcreateUser = async (userBody, role) => {
     }
     const user = await User.create({ ...userBody, role });
     return { user };
+}
+
+const checkEmailAndRegister = async (email, role) => {
+    const userEmail = await UserEmail.findOne({
+        where: { email, role, blacklisted: false },
+        attributes: ['email', 'createdBy'], // Fetch only necessary fields
+    });
+
+    if (!userEmail) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Email not found or blacklisted in UserEmail database');
+    }
+    return userEmail;
 }
 
 const getUserByEmail = async (email) => {
@@ -92,8 +104,12 @@ const userProfileUpdate = async (req, userID) => {
 const userEmailAdd = async (userBody, userID) => {
     const { user_email, user_role } = userBody;
     console.log("userID,", userID)
+    const emailTaken = await UserEmail.findOne({ where: { email: user_email } });
+    if (emailTaken) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User already taken');
+    }
     const user = await UserEmail.create({ email: user_email, role: user_role, createdBy: userID });
     return { user };
 }
 
-module.exports = { createUser, userEmailAdd, empcreateUser, getUserByEmail, getUserById, updateUserByPassword, userProfileUpdate };
+module.exports = { createUser, userEmailAdd, empcreateUser, checkEmailAndRegister, getUserByEmail, getUserById, updateUserByPassword, userProfileUpdate };

@@ -62,14 +62,14 @@ const createUserEmail = catchAsync(async (req, res) => {
     if (user.role === 'superadmin' && !['admin', 'teacher', 'student'].includes(user_role)) {
         throw new ApiError(httpStatus.FORBIDDEN, 'Super admin can only register admin, teacher, or student');
     }
-    if (user.role === 'admin' && user_role !== 'teacher') {
+    if (user.role === 'admin' && !['teacher', 'student'].includes(user_role)) {
         throw new ApiError(httpStatus.FORBIDDEN, 'Admin can only register teacher');
     }
-    if (user.role === 'teacher') {
+    if (user.role === 'teacher' && user_role !== 'student') {
         throw new ApiError(httpStatus.FORBIDDEN, 'Teacher cannot register any user');
     }
-
-    console.log("user++", user)
+    
+    console.log("user++", user_role)
     const userEmail = await userService.userEmailAdd(req.body, user.uuid);
 
     res.sendJSONResponse({

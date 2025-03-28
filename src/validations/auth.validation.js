@@ -108,6 +108,18 @@ const registerEmpTeacher = {
   }).unknown(true),
 };
 
+const registerStudent = {
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().custom(password),
+    name: Joi.string().required(),
+    contactNumber: Joi.string().required(),
+  }),
+  headers: Joi.object().keys({
+    role: Joi.string().required(),
+  }).unknown(true),
+};
+
 const login = {
   body: Joi.object().keys({
     email: Joi.string().required(),
@@ -193,5 +205,6 @@ module.exports = {
   registerEmpTeacher,
   headersRoleCheck,
   logoutSchoolUser,
-  registerUserEmail
+  registerUserEmail,
+  registerStudent,
 };
