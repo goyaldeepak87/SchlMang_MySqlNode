@@ -114,6 +114,12 @@ const registerStudent = {
     password: Joi.string().required().custom(password),
     name: Joi.string().required(),
     contactNumber: Joi.string().required(),
+    dateOfBirt: Joi.string().required(),
+    gender: Joi.string().required(),
+    address: Joi.string().required(),
+    currentClass: Joi.string().required(),
+    currentSection: Joi.string().required(),
+    admissionDate: Joi.string().required(),
   }),
   headers: Joi.object().keys({
     role: Joi.string().required(),

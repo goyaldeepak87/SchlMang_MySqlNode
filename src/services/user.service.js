@@ -2,6 +2,7 @@ const { User, Token, UserEmail } = require('../models');
 const httpStatus = require('http-status');
 const ApiError = require('../utils/ApiError');
 const { hashPassword } = require('../utils/bcryptUtils');
+const userMessages = require('../messages/userMessages');
 
 const createUser = async (userBody, role) => {
     const emailTaken = await User.findOne({ where: { role: role } });
@@ -22,14 +23,27 @@ const empcreateUser = async (userBody, role) => {
     return { user };
 }
 
+
+const stcreateUser = async (userBody, role) => {
+    // console.log("userBody++", userBody)
+    // const emailTaken = await User.findOne({ where: { email: userBody.email } });
+    // if (emailTaken) {
+    //     throw new ApiError(httpStatus.BAD_REQUEST, 'User already taken');
+    // }
+    // const user = await User.create({ ...userBody, role });
+    // return { user };
+}
+
+
 const checkEmailAndRegister = async (email, role) => {
+    console.log("emai++++?", email, role)
     const userEmail = await UserEmail.findOne({
         where: { email, role, blacklisted: false },
         attributes: ['email', 'createdBy'], // Fetch only necessary fields
     });
 
     if (!userEmail) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Email not found or blacklisted in UserEmail database');
+        throw new ApiError(httpStatus.BAD_REQUEST, userMessages.USER_EMAIL_NOT_FOUND);
     }
     return userEmail;
 }
@@ -112,4 +126,4 @@ const userEmailAdd = async (userBody, userID) => {
     return { user };
 }
 
-module.exports = { createUser, userEmailAdd, empcreateUser, checkEmailAndRegister, getUserByEmail, getUserById, updateUserByPassword, userProfileUpdate };
+module.exports = { createUser, userEmailAdd, empcreateUser, stcreateUser, checkEmailAndRegister, getUserByEmail, getUserById, updateUserByPassword, userProfileUpdate };

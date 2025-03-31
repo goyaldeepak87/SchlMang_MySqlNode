@@ -19,8 +19,9 @@ const register = catchAsync(async (req, res) => {
 
 const EmailAndRegister = catchAsync(async (req, res) => {
     const { email } = req.body;
-
-    const userEmail = await userService.checkEmailAndRegister(email);
+    const role  = req.headers.role;
+    console.log("role===?", role)
+    const userEmail = await userService.checkEmailAndRegister(email, role);
 
     console.log("userEmail", userEmail)
     const user = await userService.createUser(req.body, req.headers.role);
@@ -35,7 +36,7 @@ const EmailAndRegister = catchAsync(async (req, res) => {
 const empRegister = catchAsync(async (req, res) => {
     const { email } = req.body;
     const role  = req.headers.role;
-console.log("role==>9999", role)
+    
     const userEmail = await userService.checkEmailAndRegister(email, role);
 
     const user = await userService.empcreateUser(req.body, req.headers.role);
@@ -48,8 +49,24 @@ console.log("role==>9999", role)
 })
 
 
+const stRegister = catchAsync(async (req, res) => {
+    const { email } = req.body;
+    const role  = req.headers.role;
+
+    const userEmail = await userService.checkEmailAndRegister(email, role);
+    
+    const user = await userService.stcreateUser(req.body, req.headers.role);
+    res.sendJSONResponse({
+        statusCode: httpStatus.CREATED,
+        status: true,
+        message: userMessages.USER_REGISTER,
+        data: { result: user }
+    });
+})
+
+
 const login = catchAsync(async (req, res) => {
-    console.log("login==>", req.body)
+
     const { email, password } = req.body
     const user = await authService.loginUserWithEmailAndPassword(email, password);
     const token = await generateAuthTokens(user)
@@ -91,6 +108,7 @@ module.exports = {
     register,
     EmailAndRegister,
     empRegister,
+    stRegister,
     login,
     resetPassword,
     deleteProfile

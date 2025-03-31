@@ -9,6 +9,8 @@ const userMessages = {
     USER_DATA_FEATCH:'User data featch successfully.',
     USER_PROFILE_UPDATAED:'User data featch successfully.',
     USER_EMAIL_ADD:'User email add successfully.',
+    USER_EMAIL_NOT_FOUND: 'User email not found.',
+    USER_NOT_FOUND: 'User not found.',
 };
 
 module.exports = userMessages;

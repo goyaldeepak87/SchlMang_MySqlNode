@@ -43,7 +43,7 @@ router.post('/user-delete', auth(), authController.deleteProfile)
 
 //  student
 
-router.post('/student/register', validate(authValidation.registerStudent), authController.empRegister);
+router.post('/student/register', validate(authValidation.registerStudent), authController.stRegister);
 
 router.post('/student/login', validate(authValidation.login), authController.login);
 
