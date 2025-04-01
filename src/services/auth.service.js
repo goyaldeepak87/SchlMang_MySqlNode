@@ -1,6 +1,6 @@
 const tokenService = require('./token.service');
 const userService = require('./user.service')
-const { User } = require('../models');
+const { User, UserEmail, Student } = require('../models');
 const ApiError = require('../utils/ApiError');
 const httpStatus = require('http-status');
 const { tokenTypes } = require('../config/tokens');
@@ -43,6 +43,33 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 };
 
 
+const stLoginUserWithEmailAndPassword = async (email, password) => {
+  // Find user by email, including soft-deleted users
+  console.log("email==>222", email, password)
+
+  const stuser = await Student.scope('withPassword').findOne({
+    where: { email },
+    paranoid: false, // Include soft-deleted users
+  });
+
+  if (!stuser) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+  }
+
+  // Check if the user account is deactivated (soft-deleted)
+  if (stuser.deletedAt) {
+    await stuser.restore(); // Reactivate the account
+  }
+
+  // Verify password
+  if (!(await stuser.isPasswordMatch(password))) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+  }
+
+  return stuser; // Return the restored user
+};
+
+
 const resetPassword = async (resetPasswordToken, password) => {
   const { old_password, new_password } = password
   console.log("password==>", password)
@@ -76,6 +103,7 @@ const deleteUserProfile = async (userID) => {
 
 module.exports = {
   loginUserWithEmailAndPassword,
+  stLoginUserWithEmailAndPassword,
   resetPassword,
   deleteUserProfile
 };

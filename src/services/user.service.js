@@ -1,4 +1,4 @@
-const { User, Token, UserEmail } = require('../models');
+const { User, Token, UserEmail, Student } = require('../models');
 const httpStatus = require('http-status');
 const ApiError = require('../utils/ApiError');
 const { hashPassword } = require('../utils/bcryptUtils');
@@ -25,13 +25,13 @@ const empcreateUser = async (userBody, role) => {
 
 
 const stcreateUser = async (userBody, role) => {
-    // console.log("userBody++", userBody)
-    // const emailTaken = await User.findOne({ where: { email: userBody.email } });
-    // if (emailTaken) {
-    //     throw new ApiError(httpStatus.BAD_REQUEST, 'User already taken');
-    // }
-    // const user = await User.create({ ...userBody, role });
-    // return { user };
+    console.log("userBody++", userBody)
+    const emailTaken = await Student.findOne({ where: { email: userBody.email } });
+    if (emailTaken) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User already taken');
+    }
+    const user = await Student.create({ ...userBody });
+    return { user };
 }
 
 

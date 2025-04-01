@@ -78,6 +78,18 @@ const login = catchAsync(async (req, res) => {
     });
 });
 
+const stLogin = catchAsync(async (req, res) => {
+    const { email, password } = req.body
+    const stUser = await authService.stLoginUserWithEmailAndPassword(email, password);
+    const token = await generateAuthTokens(stUser)
+    res.sendJSONResponse({
+        statusCode: httpStatus.OK,
+        status: true,
+        message: userMessages.LOGIN_SUCCESS,
+        data: { result: { user, token } },
+    });
+})
+
 const resetPassword = catchAsync(async (req, res) => {
     const userResetPassword = await authService.resetPassword(req.headers.authorization, req.body);
     res.sendJSONResponse({
@@ -110,6 +122,7 @@ module.exports = {
     empRegister,
     stRegister,
     login,
+    stLogin,
     resetPassword,
     deleteProfile
 };
