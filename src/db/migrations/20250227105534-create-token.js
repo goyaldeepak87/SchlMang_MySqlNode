@@ -15,12 +15,12 @@ module.exports = {
       user_uuid: {
         type: Sequelize.UUID,
         allowNull: false,
-        references: {
-          model: 'Users',  // Ensure the model name is correct (Users table)
-          key: 'uuid',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL', // Optional, customize based on your needs
+        // references: {
+        //   model: 'Users',  // Ensure the model name is correct (Users table)
+        //   key: 'uuid',
+        // },
+        // onUpdate: 'CASCADE',
+        // onDelete: 'SET NULL', // Optional, customize based on your needs
       },
       type: {
         type: Sequelize.STRING,

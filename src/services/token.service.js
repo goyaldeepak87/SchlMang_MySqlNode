@@ -29,6 +29,7 @@ const generateAuthTokens = async (user) => {
   await Token.create({
     token: refreshToken,
     user_uuid: user.uuid,
+    user_type: 'Student', 
     type: 'auth',
     expires: new Date(new Date().getTime() + 3600000)
   });

@@ -145,21 +145,21 @@ module.exports = (sequelize, DataTypes) => {
         return isMatch;
     };
 
-    Student.associate = (models) => {
-        // Associate Student with StudentClassHistory
-        Student.hasMany(models.StudentClassHistory, {
-            foreignKey: 'studentUuid',
-            as: 'classHistory',
-        });
-    };
+    // Student.associate = (models) => {
+    //     // Associate Student with StudentClassHistory
+    //     Student.hasMany(models.StudentClassHistory, {
+    //         foreignKey: 'studentUuid',
+    //         as: 'classHistory',
+    //     });
+    // };
 
-    // Student.hasMany(sequelize.models.Token, {
-    //     foreignKey: 'user_uuid',
-    //     constraints: false, // Disable foreign key constraints for polymorphic associations
-    //     scope: {
-    //         user_type: 'Student', // Only associate with Tokens where user_type is 'Student'
-    //     },
-    // });
+    Student.hasMany(sequelize.models.Token, {
+        foreignKey: 'user_uuid',
+        constraints: false, // Disable foreign key constraints for polymorphic associations
+        scope: {
+            user_type: 'Student', // Only associate with Tokens where user_type is 'Student'
+        },
+    });
 
     return Student;
 };

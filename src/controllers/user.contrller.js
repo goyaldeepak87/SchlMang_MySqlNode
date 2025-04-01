@@ -2,7 +2,7 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { tokenTypes } = require('../config/tokens');
 const { tokenService, fileService } = require('../services');
-const { Token, User } = require('../models');
+const { Token, User, Student } = require('../models');
 const { userService } = require('../services');
 const userMessages = require('../messages/userMessages');
 const ApiError = require('../utils/ApiError');
@@ -45,10 +45,14 @@ const createUserEmail = catchAsync(async (req, res) => {
     const userID = await tokenService.verifyTokenUserId(token);
     const tokenData = await Token.findOne({
         where: { user_uuid: userID.sub },
-        include: {
-            model: User,
-            where: { role: userrole },
-        }
+        // include: {
+        //     model: User,
+        //     where: { role: userrole },
+        // }
+        include: [
+            { model: User, required: false },
+            { model: Student, required: false },
+          ],
     });
 
     if (!tokenData) {

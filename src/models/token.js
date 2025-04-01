@@ -7,10 +7,14 @@ module.exports = (sequelize, DataTypes) => {
     user_uuid: {
       type: DataTypes.UUID,
       allowNull: false,
-      references: {
-        model: 'Users', // This should match the name of the user model (case-sensitive)
-        key: 'uuid',
-      },
+      // references: {
+      //   model: 'Users', // This should match the name of the user model (case-sensitive)
+      //   key: 'uuid',
+      // },
+    },
+    user_type: {
+      type: DataTypes.STRING,
+      allowNull: false, // 'User' or 'Student'
     },
     type: {
       type: DataTypes.STRING,
@@ -22,25 +26,25 @@ module.exports = (sequelize, DataTypes) => {
 
   Token.associate = (models) => {
     // Token belongs to User
-    Token.belongsTo(models.User, {
-      foreignKey: 'user_uuid',
-      targetKey: 'uuid', // Make sure this matches the `User` table's `uuid` field
-    });
     // Token.belongsTo(models.User, {
     //   foreignKey: 'user_uuid',
-    //   constraints: false, // Disable foreign key constraints for polymorphic associations
-    //   scope: {
-    //     user_type: 'User', // Only associate with User when user_type is 'User'
-    //   },
+    //   targetKey: 'uuid', // Make sure this matches the `User` table's `uuid` field
     // });
+    Token.belongsTo(models.User, {
+      foreignKey: 'user_uuid',
+      constraints: false, // Disable foreign key constraints for polymorphic associations
+      scope: {
+        user_type: 'User', // Only associate with User when user_type is 'User'
+      },
+    });
 
-    // Token.belongsTo(models.Student, {
-    //   foreignKey: 'user_uuid',
-    //   constraints: false, // Disable foreign key constraints for polymorphic associations
-    //   scope: {
-    //     user_type: 'Student', // Only associate with Student when user_type is 'Student'
-    //   },
-    // });
+    Token.belongsTo(models.Student, {
+      foreignKey: 'user_uuid',
+      constraints: false, // Disable foreign key constraints for polymorphic associations
+      scope: {
+        user_type: 'Student', // Only associate with Student when user_type is 'Student'
+      },
+    });
   };
 
   return Token;
