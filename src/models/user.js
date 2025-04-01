@@ -121,17 +121,17 @@ module.exports = (sequelize, DataTypes) => {
         return isMatch;
     };
 
-    // User.hasMany(sequelize.models.Token, {
-    //     foreignKey: 'user_uuid',
-    //     sourceKey: 'uuid',
-    // });
     User.hasMany(sequelize.models.Token, {
         foreignKey: 'user_uuid',
-        constraints: false, // Disable foreign key constraints for polymorphic associations
-        scope: {
-            user_type: 'User', // Only associate with Tokens where user_type is 'User'
-        },
+        sourceKey: 'uuid',
     });
+    // User.hasMany(sequelize.models.Token, {
+    //     foreignKey: 'user_uuid',
+    //     constraints: false, // Disable foreign key constraints for polymorphic associations
+    //     scope: {
+    //         user_type: 'User', // Only associate with Tokens where user_type is 'User'
+    //     },
+    // });
 
     return User;
 };
